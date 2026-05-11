@@ -1,0 +1,51 @@
+### GET request to example server
+GET http://localhost:8080/pets/69f3050087b951275fc71ecb
+
+###
+
+POST http://localhost:8080/pets
+Content-Type: application/json
+
+{
+  "petName": "my catfish",
+  "petType": "FISH"
+}
+
+####
+
+DELETE http://localhost:8080/pets/FISH
+
+### GET request to example server
+GET http://localhost:8080/pets/type/FISH
+
+
+### GET request to example server
+
+GET http://localhost:8080/pets/retry
+
+### GET request to example server
+GET http://localhost:8080/pets/retry
+
+### GET request to example server
+GET http://localhost:8080/pets/retry
+
+### GET request to example server
+GET http://localhost:8080/pets/retry
+
+
+### PostCache
+
+
+POST http://127.0.0.1:8080/cache/key/69f838a3025eec27070f075
+Content-Type: application/json
+
+{
+  "id": "69f838a3025eec27070f075",
+  "petName": "my catfish",
+  "petType": "FISH"
+}
+
+### delete cache
+
+DELETE localhost:8080/cache/key/69f838a3025eec27070f075f
+
