@@ -20,16 +20,6 @@ GET http://localhost:8080/pets/type/FISH
 
 
 ### GET request to example server
-
-GET http://localhost:8080/pets/retry
-
-### GET request to example server
-GET http://localhost:8080/pets/retry
-
-### GET request to example server
-GET http://localhost:8080/pets/retry
-
-### GET request to example server
 GET http://localhost:8080/pets/retry
 
 
@@ -49,3 +39,24 @@ Content-Type: application/json
 
 DELETE localhost:8080/cache/key/69f838a3025eec27070f075f
 
+
+### pub sub
+
+GET localhost:8080/cache/pub/jerry
+
+
+###
+POST http://localhost:8080/quartz/create
+Content-Type: application/json
+
+{
+  "jobName": "cleanup",
+  "jobGroup": "cleanup",
+  "triggerName": "Trigger_clean",
+  "triggerGroup": "Trigger_clean",
+  "cronExpression": "0/5 * * * * ?"
+}
+
+
+###
+DELETE http://localhost:8080/quartz/jobkey/cleanup/jobGroup/cleanup

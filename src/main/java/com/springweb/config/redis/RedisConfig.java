@@ -1,6 +1,7 @@
 package com.springweb.config.redis;
 
 import com.springweb.events.RedisKeyExpireListener;
+import com.springweb.events.RedisSubscriber;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
@@ -9,6 +10,7 @@ import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.data.redis.listener.PatternTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
@@ -24,7 +26,7 @@ import java.time.Duration;
 public class RedisConfig {
 
     /**
-     * Plain ObjectMapper — no default typing, so no @class field in Redis.
+     * Plain ObjectMapper ï¿½ no default typing, so no @class field in Redis.
      */
     @Bean
     public ObjectMapper redisObjectMapper() {
@@ -43,6 +45,20 @@ public class RedisConfig {
         template.setValueSerializer(serializer);
         template.setHashValueSerializer(serializer);
         return template;
+    }
+
+    @Bean
+    public ChannelTopic topic() {
+        return new ChannelTopic("refreshContext");
+    }
+
+    @Bean
+    RedisMessageListenerContainer pubsub(RedisConnectionFactory connectionFactory,
+                                         RedisSubscriber redisSubscriber) {
+        RedisMessageListenerContainer container = new RedisMessageListenerContainer();
+        container.setConnectionFactory(connectionFactory);
+        container.addMessageListener(redisSubscriber, topic());
+        return container;
     }
 
     @Bean
@@ -66,7 +82,7 @@ public class RedisConfig {
     }
 
     @Bean
-    RedisMessageListenerContainer container(RedisConnectionFactory connectionFactory) {
+    RedisMessageListenerContainer redisMessageListenerContainer(RedisConnectionFactory connectionFactory) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(connectionFactory);
 //        container.addMessageListener(listenerAdapter, new PatternTopic("__keyevent@*__:expired"));

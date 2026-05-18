@@ -1,4 +1,4 @@
-package com.springweb.repository;
+package com.springweb.repository.mongo;
 
 import com.springweb.model.PetType;
 import org.springframework.data.mongodb.repository.MongoRepository;

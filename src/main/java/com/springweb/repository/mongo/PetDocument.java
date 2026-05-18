@@ -1,8 +1,7 @@
-package com.springweb.repository;
+package com.springweb.repository.mongo;
 
 import com.springweb.model.PetResponse;
 import com.springweb.model.PetType;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.PersistenceCreator;

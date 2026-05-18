@@ -1,6 +1,6 @@
 package com.springweb.model;
 
-import com.springweb.repository.PetDocument;
+import com.springweb.repository.mongo.PetDocument;
 
 public record PetsRequest(String petName, PetType petType) {
 

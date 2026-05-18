@@ -1,0 +1,13 @@
+{
+  "servers": {
+    "postgres": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-postgres",
+        "postgresql://springweb:springweb123@localhost:5432/springweb"
+      ]
+    }
+  }
+}
+

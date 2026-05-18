@@ -11,15 +11,17 @@ import org.springframework.stereotype.Component;
 @Component
 public class RedisKeyExpireListener extends KeyExpirationEventMessageListener {
 
-    public RedisKeyExpireListener(RedisMessageListenerContainer listenerContainer) {
-        super(listenerContainer);
+    public RedisKeyExpireListener(RedisMessageListenerContainer redisMessageListenerContainer) {
+        super(redisMessageListenerContainer);
     }
 
     @Override
     public void onMessage(Message message, byte @Nullable [] pattern) {
         String expiredKey = new String(message.getBody());
         String channel = new String(message.getChannel());
-        log.info("Redis key expired — key: [{}], channel: [{}]", expiredKey, channel);
+        String matchedPattern = pattern != null ? new String(pattern) : "null";
+
+        log.info("Redis key expired ï¿½ key: [{}], channel: [{}], pattern: [{}]", expiredKey, channel, matchedPattern);
 
         // Add logic here based on which cache the key belongs to
         if (expiredKey.startsWith("get.pet.types")) {

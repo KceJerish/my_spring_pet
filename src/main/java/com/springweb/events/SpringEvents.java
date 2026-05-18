@@ -1,6 +1,6 @@
 package com.springweb.events;
 
-import com.springweb.repository.PetDocument;
+import com.springweb.repository.mongo.PetDocument;
 import org.springframework.boot.context.event.ApplicationEnvironmentPreparedEvent;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.boot.context.event.ApplicationStartedEvent;

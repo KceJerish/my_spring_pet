@@ -1,4 +1,4 @@
-.PHONY: install maven-install build run test clean mongo-install mongo-uninstall mongo-start mongo-stop mongo-status mongo-restart mongo-shell mongo-logs redis-start redis-stop redis-restart redis-status redis-shell redis-keys redis-type redis-get redis-ttl help
+.PHONY: install maven-install build run test clean mongo-install mongo-uninstall mongo-start mongo-stop mongo-status mongo-restart mongo-shell mongo-logs redis-start redis-stop redis-restart redis-status redis-shell redis-keys redis-type redis-get redis-ttl postgres-start postgres-stop postgres-restart postgres-status postgres-shell postgres-quartz-reset help
 
 ## Show available commands
 help:
@@ -29,6 +29,13 @@ help:
 	@echo "  make redis-type    - Check key type:  make redis-type key=<key>"
 	@echo "  make redis-get     - Get key value:   make redis-get key=<key>"
 	@echo "  make redis-ttl     - Check key TTL:   make redis-ttl key=<key>"
+	@echo ""
+	@echo "=== PostgreSQL Commands ==="
+	@echo "  make postgres-start   - Start PostgreSQL container (creates if not exists)"
+	@echo "  make postgres-stop    - Stop PostgreSQL container"
+	@echo "  make postgres-restart - Restart PostgreSQL container"
+	@echo "  make postgres-status  - Check PostgreSQL container status"
+	@echo "  make postgres-shell   - Open psql shell"
 	@echo ""
 	@echo "=== Full Setup ==="
 	@echo "  make setup         - Install everything and start services"
@@ -136,4 +143,37 @@ redis-get:
 ## Check TTL: make redis-ttl key=<key>
 redis-ttl:
 	docker exec -it redis redis-cli TTL $(key)
+
+## Start PostgreSQL container (creates if not exists)
+postgres-start:
+	@docker ps -a --format '{{.Names}}' | grep -q '^postgres$$' \
+		&& docker start postgres \
+		|| docker run -d --name postgres \
+			-e POSTGRES_DB=springweb \
+			-e POSTGRES_USER=springweb \
+			-e POSTGRES_PASSWORD=springweb123 \
+			-p 5432:5432 postgres:latest
+	@echo "==> PostgreSQL running on port 5432 (db=springweb, user=springweb)"
+
+## Stop PostgreSQL container
+postgres-stop:
+	docker stop postgres
+
+## Restart PostgreSQL container
+postgres-restart:
+	docker restart postgres
+
+## Check PostgreSQL container status
+postgres-status:
+	docker ps -a --filter name=postgres --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"
+
+## Open psql shell
+postgres-shell:
+	docker exec -it postgres psql -U springweb -d springweb
+
+## Clear all Quartz tables (fixes stale job/trigger errors after restart)
+postgres-quartz-reset:
+	docker exec -i postgres psql -U springweb -d springweb -c \
+		"DELETE FROM QRTZ_FIRED_TRIGGERS; DELETE FROM QRTZ_SIMPLE_TRIGGERS; DELETE FROM QRTZ_SIMPROP_TRIGGERS; DELETE FROM QRTZ_CRON_TRIGGERS; DELETE FROM QRTZ_BLOB_TRIGGERS; DELETE FROM QRTZ_TRIGGERS; DELETE FROM QRTZ_JOB_DETAILS; DELETE FROM QRTZ_CALENDARS; DELETE FROM QRTZ_PAUSED_TRIGGER_GRPS; DELETE FROM QRTZ_LOCKS; DELETE FROM QRTZ_SCHEDULER_STATE;"
+	@echo "==> Quartz tables cleared"
 
