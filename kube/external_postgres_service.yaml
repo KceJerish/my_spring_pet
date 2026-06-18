@@ -1,0 +1,24 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: external-postgres
+spec:
+  ports:
+    - protocol: TCP
+      port: 5432
+      targetPort: 5432
+---
+apiVersion: discovery.k8s.io/v1
+kind: EndpointSlice
+metadata:
+  name: external-postgres
+  labels:
+    kubernetes.io/service-name: external-postgres
+    app: spring-web
+addressType: IPv4
+endpoints:
+  - addresses:
+      - 192.168.18.64  # Your local computer IP
+ports:
+  - protocol: TCP
+    port: 5432

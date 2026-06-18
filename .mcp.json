@@ -7,6 +7,14 @@
         "@modelcontextprotocol/server-postgres",
         "postgresql://springweb:springweb123@localhost:5432/springweb"
       ]
+    },
+    "mongodb": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-mongodb",
+        "mongodb://localhost:27017/pets"
+      ]
     }
   }
 }

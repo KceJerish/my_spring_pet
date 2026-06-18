@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: spring-web-rc
+  namespace: spring-web
+  labels:
+    app: spring-web
+    type: backend
+spec:
+  selector:
+    matchLabels:
+      app: spring-web
+      type: backend
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: spring-web
+        type: backend
+    spec:
+      containers:
+        - name: spring-web-app
+          image: spring-web-app:latest
+          imagePullPolicy: Never  # Use local image, don't pull from registry
+          ports:
+            - containerPort: 8080
+          env:
+            - name: spring.profiles.active
+              value: "kubernetes"
+
+#spec:
+#  replicas: 2
+#  template:
+#    metadata:
+#      labels:
+#        app: spring-web
+#        type: backend
+#    spec:
+#      containers:
+#        - name: spring-web-app
+#          image: spring-web-app:latest
+#          imagePullPolicy: Never  # Use local image, don't pull from registry
+#          ports:
+#            - containerPort: 8080
+#          env:
+#            - name: spring.profiles.active
+#              value: "kubernetes"

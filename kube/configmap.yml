@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: spring-web-config
+data:
+  # PostgreSQL configuration (using external service)
+  database.url: "jdbc:postgresql://external-postgres:5432/springweb"
+  database.username: "springweb"
+  database.password: "springweb123"
+
+  # MongoDB configuration (using external service)
+  mongodb.host: "external-mongodb"
+  mongodb.port: "27017"
+  mongodb.database: "pets"
+
+  # Redis configuration (using external service)
+  redis.host: "external-redis"
+  redis.port: "6379"
+

@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: spring-web
+  labels:
+    app: spring-web
+    type: backend
+spec:
+  containers:
+    - name: spring-web-app
+      image: spring-web-app:latest
+      imagePullPolicy: Never  # Use local image, don't pull from registry
+      ports:
+        - containerPort: 8080
+      env:
+        - name: spring.profiles.active
+          value: "kubernetes"

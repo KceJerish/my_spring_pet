@@ -1,0 +1,106 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: spring-web
+  labels:
+    app: spring-web
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: spring-web
+  template:
+    metadata:
+      labels:
+        app: spring-web
+    spec:
+      containers:
+      - name: spring-web-app
+        image: spring-web-app:latest
+        imagePullPolicy: Never  # Use local image only
+        ports:
+        - containerPort: 8080
+          name: http
+        env:
+        - name: SPRING_DATASOURCE_URL
+          valueFrom:
+            configMapKeyRef:
+              name: spring-web-config
+              key: database.url
+        - name: SPRING_DATASOURCE_USERNAME
+          valueFrom:
+            configMapKeyRef:
+              name: spring-web-config
+              key: database.username
+        - name: SPRING_DATASOURCE_PASSWORD
+          valueFrom:
+            configMapKeyRef:
+              name: spring-web-config
+              key: database.password
+        - name: SPRING_MONGODB_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: spring-web-config
+              key: mongodb.host
+        - name: SPRING_MONGODB_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: spring-web-config
+              key: mongodb.port
+        - name: SPRING_MONGODB_DATABASE
+          valueFrom:
+            configMapKeyRef:
+              name: spring-web-config
+              key: mongodb.database
+        - name: SPRING_DATA_REDIS_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: spring-web-config
+              key: redis.host
+        - name: SPRING_DATA_REDIS_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: spring-web-config
+              key: redis.port
+        - name: JAVA_OPTS
+          value: "-Xmx512m -Xms256m"
+        resources:
+          requests:
+            memory: "384Mi"
+            cpu: "250m"
+          limits:
+            memory: "768Mi"
+            cpu: "1000m"
+        livenessProbe:
+          httpGet:
+            path: /actuator/health
+            port: 8080
+          initialDelaySeconds: 60
+          periodSeconds: 10
+          timeoutSeconds: 3
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /actuator/health
+            port: 8080
+          initialDelaySeconds: 30
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 3
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: spring-web
+  labels:
+    app: spring-web
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 8080
+    targetPort: 8080
+    protocol: TCP
+    name: http
+  selector:
+    app: spring-web
+

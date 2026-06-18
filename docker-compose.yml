@@ -1,0 +1,100 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:17-alpine
+    container_name: spring-web-postgres
+    environment:
+      POSTGRES_DB: springweb
+      POSTGRES_USER: springweb
+      POSTGRES_PASSWORD: springweb123
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - spring-web-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U springweb"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # MongoDB
+  mongodb:
+    image: mongo:8-jammy
+    container_name: spring-web-mongodb
+    environment:
+      MONGO_INITDB_DATABASE: pets
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - spring-web-network
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Redis
+  redis:
+    image: redis:7-alpine
+    container_name: spring-web-redis
+    command: redis-server --notify-keyspace-events Ex
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - spring-web-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Spring Boot Application
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: spring-web-app
+    environment:
+      # PostgreSQL configuration
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/springweb
+      SPRING_DATASOURCE_USERNAME: springweb
+      SPRING_DATASOURCE_PASSWORD: springweb123
+      # MongoDB configuration
+      SPRING_MONGODB_HOST: mongodb
+      SPRING_MONGODB_PORT: 27017
+      SPRING_MONGODB_DATABASE: pets
+      # Redis configuration
+      SPRING_DATA_REDIS_HOST: redis
+      SPRING_DATA_REDIS_PORT: 6379
+      # Java options
+      JAVA_OPTS: "-Xmx512m -Xms256m"
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      mongodb:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - spring-web-network
+    restart: unless-stopped
+
+networks:
+  spring-web-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  mongodb_data:
+  redis_data:
+
