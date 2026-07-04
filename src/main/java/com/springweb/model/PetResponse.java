@@ -6,9 +6,13 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
+import java.io.Serializable;
+
 @Getter
 @JsonPropertyOrder(value = {"id", "petName","petType","_links"})
-public class PetResponse {
+public class PetResponse implements Serializable {
+    
+    private static final long serialVersionUID = 1L;
 
     private String id;
     private String petName;

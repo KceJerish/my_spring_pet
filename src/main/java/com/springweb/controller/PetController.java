@@ -28,16 +28,19 @@ public class PetController {
 
     @GetMapping("pets/{id}")
     public PetResponse findPetById(@PathVariable("id") String petId) {
+        System.out.println(Thread.currentThread().getName());
         return petService.findPetById(petId);
     }
 
     @GetMapping("pets/type/{type}")
     public List<PetResponse> findPetById(@PathVariable("type") PetType petType) {
+        System.out.println(Thread.currentThread().getName());
         return petService.findPetByType(petType);
     }
 
     @GetMapping("pets/retry")
     public List<PetResponse> checkRetry() throws PetNotFoundException {
+
         return petService.checkRetry();
     }
 

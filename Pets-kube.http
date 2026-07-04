@@ -1,0 +1,62 @@
+### GET request to example server
+GET http://localhost:30080/pets/69f3050087b951275fc71ecb
+
+###
+
+POST http://localhost:30080/pets
+Content-Type: application/json
+
+{
+  "petName": "my catfish",
+  "petType": "FISH"
+}
+
+####
+
+DELETE http://localhost:30080/pets/FISH
+
+### GET request to example server
+GET http://localhost:30080/pets/type/FISH
+
+
+### GET request to example server
+GET http://localhost:30080/pets/retry
+
+
+### PostCache
+
+
+POST http://127.0.0.1:30080/cache/key/69f838a3025eec27070f075
+Content-Type: application/json
+
+{
+  "id": "69f838a3025eec27070f075",
+  "petName": "my catfish",
+  "petType": "FISH"
+}
+
+### delete cache
+
+DELETE localhost:30080/cache/key/69f838a3025eec27070f075f
+
+
+### pub sub
+
+GET localhost:30080/cache/pub/jerry
+
+
+###
+POST http://localhost:30080/quartz/create
+Content-Type: application/json
+
+{
+  "jobName": "cleanup",
+  "jobGroup": "cleanup",
+  "triggerName": "Trigger_clean",
+  "triggerGroup": "Trigger_clean",
+  "cronExpression": "0/5 * * * * ?"
+}
+
+
+###
+DELETE http://localhost:30080/quartz/jobkey/cleanup/jobGroup/cleanup
