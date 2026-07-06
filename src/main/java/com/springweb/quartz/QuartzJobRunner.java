@@ -16,7 +16,7 @@ import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
 
 @Slf4j
-@Component
+//@Component
 @RequiredArgsConstructor
 public  class QuartzJobRunner implements ApplicationRunner {
 

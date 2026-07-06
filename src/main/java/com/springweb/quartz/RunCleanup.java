@@ -9,7 +9,8 @@ import org.quartz.JobExecutionException;
 public class RunCleanup implements Job {
 
     @Override
-    public void execute(JobExecutionContext context) throws JobExecutionException {
+    public void execute(JobExecutionContext context) {
+        context.getJobDetail().getJobDataMap().forEach((k, v )-> System.out.println(k + " : " + v));
         log.info("RunCleanup started");
         try {
             Thread.sleep(Long.parseLong("1000"));

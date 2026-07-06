@@ -60,3 +60,14 @@ Content-Type: application/json
 
 ###
 DELETE http://localhost:8080/quartz/jobkey/cleanup/jobGroup/cleanup
+
+
+###
+POST http://localhost:8080/quartz/schedule/payment
+Content-Type: application/json
+
+{
+  "user": "jerry6",
+  "amount": 30,
+  "inSeconds": 30
+}
