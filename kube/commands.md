@@ -144,3 +144,25 @@ kubectl apply -f kube/service.yml
 kubectl get pods
 kubectl get services
 ```
+
+### Nginx frontend (static files + reverse proxy)
+```bash
+# Config + static content
+kubectl apply -f kube/nginx-configmap.yml
+
+# Pod and NodePort service
+kubectl apply -f kube/nginx-pod.yml
+kubectl apply -f kube/service/nginx_service.yml
+
+# Static page served by nginx
+curl http://localhost:30081/
+
+# Proxied to spring-web-service (strips the /api prefix)
+curl http://localhost:30081/api/pets/type/DOG
+
+# Reload after editing the config map
+kubectl delete pod nginx -n spring-web && kubectl apply -f kube/nginx-pod.yml
+```
+
+> Note: nginx resolves `spring-web-service` at startup, so apply
+> `kube/service/spring-web_service.yml` before the nginx pod.

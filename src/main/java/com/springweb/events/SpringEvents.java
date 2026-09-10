@@ -24,7 +24,7 @@ public class SpringEvents {
 
     @EventListener(ApplicationEnvironmentPreparedEvent.class)
     public void events(ApplicationEnvironmentPreparedEvent event) {
-        System.out.println("ApplicationReadyEvent started "+ event.getEnvironment().getSystemEnvironment().entrySet());
+        System.out.println("ApplicationEnvironmentPreparedEvent started "+ event.getEnvironment().getSystemEnvironment().entrySet());
     }
 
     @EventListener(AfterSaveEvent.class)

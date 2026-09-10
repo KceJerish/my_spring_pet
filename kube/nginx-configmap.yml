@@ -1,0 +1,96 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-config
+  namespace: spring-web
+  labels:
+    app: nginx
+    type: frontend
+data:
+  default.conf: |
+    upstream spring_backend {
+        server spring-web-service.spring-web.svc.cluster.local:80;
+        keepalive 16;
+    }
+
+    server {
+        listen 80;
+        server_name _;
+
+        root /usr/share/nginx/html;
+        index index.html;
+
+        # Static content served directly by nginx
+        location / {
+            try_files $uri $uri/ /index.html;
+        }
+
+        location /healthz {
+            access_log off;
+            return 200 "ok\n";
+        }
+
+        # Reverse proxy: /api/pets -> spring-web-service /pets
+        location /api/ {
+            rewrite ^/api/(.*)$ /$1 break;
+            proxy_pass http://spring_backend;
+            include /etc/nginx/conf.d/proxy_common.inc;
+        }
+
+        # Direct passthrough for the Spring endpoints
+        location /pets {
+            proxy_pass http://spring_backend;
+            include /etc/nginx/conf.d/proxy_common.inc;
+        }
+
+        location /cache/ {
+            proxy_pass http://spring_backend;
+            include /etc/nginx/conf.d/proxy_common.inc;
+        }
+
+        location /quartz/ {
+            proxy_pass http://spring_backend;
+            include /etc/nginx/conf.d/proxy_common.inc;
+        }
+
+        location /actuator/ {
+            proxy_pass http://spring_backend;
+            include /etc/nginx/conf.d/proxy_common.inc;
+        }
+    }
+  proxy_common.inc: |
+    proxy_http_version 1.1;
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+    proxy_set_header Connection "";
+    proxy_connect_timeout 5s;
+    proxy_send_timeout 60s;
+    proxy_read_timeout 60s;
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-static
+  namespace: spring-web
+  labels:
+    app: nginx
+    type: frontend
+data:
+  index.html: |
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>spring-web frontend</title>
+    </head>
+    <body>
+        <h1>nginx frontend</h1>
+        <p>Static content is served by nginx. API calls are proxied to spring-web-service.</p>
+        <ul>
+            <li><a href="/api/pets/type/DOG">/api/pets/type/DOG</a></li>
+            <li><a href="/cache/diagnose">/cache/diagnose</a></li>
+        </ul>
+    </body>
+    </html>
