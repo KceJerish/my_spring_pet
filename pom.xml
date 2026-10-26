@@ -162,6 +162,9 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
+                    <image>
+                        <name>pets:${project.version}</name>
+                    </image>
                     <excludes>
                         <exclude>
                             <groupId>org.projectlombok</groupId>
@@ -201,9 +204,6 @@
                             <layers>
                                 <enabled>true</enabled>
                             </layers>
-                            <image>
-                                <name>pets:${project.version}</name>
-                            </image>
                         </configuration>
                     </plugin>
                 </plugins>
