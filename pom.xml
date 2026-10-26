@@ -154,9 +154,7 @@
                 <configuration>
                     <!-- Automatically version submodules to match the parent POM -->
                     <autoVersionSubmodules>true</autoVersionSubmodules>
-                    <!-- Specify custom release profiles, like GPG signing or Javadocs -->
-                    <releaseProfiles>release</releaseProfiles>
-
+                    <releaseProfiles>docker-build</releaseProfiles>
                 </configuration>
             </plugin>
             <plugin>
@@ -188,7 +186,28 @@
                 </configuration>
             </plugin>
         </plugins>
-    </build>
 
+    </build>
+    <profiles>
+        <profile>
+            <id>docker-build</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.springframework.boot</groupId>
+                        <artifactId>spring-boot-maven-plugin</artifactId>
+                        <configuration>
+                            <layers>
+                                <enabled>true</enabled>
+                            </layers>
+                            <image>
+                                <name>pets</name>
+                            </image>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>
 
