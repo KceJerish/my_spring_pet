@@ -21,6 +21,11 @@
         <spring-cloud.version>2025.1.1</spring-cloud.version>
     </properties>
 
+    <scm>
+        <developerConnection>scm:git:https://github.com/KceJerish/my_spring_pet.git</developerConnection>
+        <tag>HEAD</tag>
+    </scm>
+
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -143,6 +148,19 @@
 
     <build>
         <plugins>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-release-plugin</artifactId>
+                <version>3.3.1</version>
+                <configuration>
+                    <!-- Automatically version submodules to match the parent POM -->
+                    <autoVersionSubmodules>true</autoVersionSubmodules>
+                    <!-- Specify custom release profiles, like GPG signing or Javadocs -->
+                    <releaseProfiles>release</releaseProfiles>
+
+                </configuration>
+            </plugin>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
