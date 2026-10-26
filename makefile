@@ -179,9 +179,9 @@ postgres-start:
 			-e POSTGRES_USER=springweb \
 			-e POSTGRES_PASSWORD=springweb123 \
 			-p 5432:5432 \
-			-v $(HOME)/postgres-data:/var/lib/postgresql \
+			-v postgres-data:/var/lib/postgresql \
 			postgres:latest
-	@echo "==> PostgreSQL running on port 5432 (db=springweb, user=springweb, data=$(HOME)/postgres-data)"
+	@echo "==> PostgreSQL running on port 5432 (db=springweb, user=springweb)"
 
 ## Stop PostgreSQL container
 postgres-stop:
@@ -208,7 +208,7 @@ postgres-quartz-reset:
 ## Build Docker image
 docker-build:
 	@echo "==> Building Docker image..."
-	docker build -t spring-web-app:latest .
+	docker build -t pets:latest .
 	@echo "==> Docker image built successfully!"
 
 ## Run app in Docker container (standalone - requires databases already running)

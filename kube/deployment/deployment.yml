@@ -1,27 +1,27 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: spring-web
-  namespace: spring-web
+  name: pet-app
+  namespace: my-pet-namespace
   labels:
-    app: spring-web
+    app: my-pet
     type: backend
 spec:
-  replicas: 1
+  replicas: 3
   selector:
     matchLabels:
-      app: spring-web
+      app: my-pet
       type: backend
   template:
     metadata:
       labels:
-        app: spring-web
+        app: my-pet
         type: backend
     spec:
       containers:
-        - name: spring-web-app
-          image: spring-web-app:latest
-          imagePullPolicy: Never  # Use local image, don't pull from registry
+        - name: pet-app
+          image: pets:latest
+          imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8080
           env:

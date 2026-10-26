@@ -1,0 +1,36 @@
+---
+# Allow traffic FROM app namespace TO postgres service in common-namespace
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-postgres-from-app
+  namespace: common-namespace
+spec:
+  podSelector:
+    matchLabels:
+      service: external-postgres
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              name: my-pet-namespace
+      ports:
+        - protocol: TCP
+          port: 5432
+---
+# Label the namespaces so NetworkPolicy can identify them
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: common-namespace
+  labels:
+    name: common-namespace
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: my-pet-namespace
+  labels:
+    name: my-pet-namespace

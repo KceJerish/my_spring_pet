@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: spring-web
+  name: my-pet-namespace
   labels:
-    name: spring-web
+    name: my-pet
 
