@@ -21,7 +21,6 @@
 
     <scm>
         <developerConnection>scm:git:git@github.com:KceJerish/my_spring_pet.git</developerConnection>
-        <tag>spring-web-0.0.1</tag>
     </scm>
 
     <dependencyManagement>
