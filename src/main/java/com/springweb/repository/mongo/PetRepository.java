@@ -12,4 +12,6 @@ public interface PetRepository extends MongoRepository<PetDocument, String> {
     public void deleteByType(PetType petType);
 
     List<PetDocument> findByType(PetType petType);
+
+    void deleteByPetId(String petId);
 }

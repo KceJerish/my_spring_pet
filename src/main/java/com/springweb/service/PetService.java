@@ -39,6 +39,10 @@ public class PetService {
         petRepository.deleteByType(petType);
     }
 
+    public void deleteById(String petId) {
+        petRepository.deleteByPetId(petId);
+    }
+
     @Cacheable(value = "get.pet.types", key = "#petType")
     public List<PetResponse> findPetByType(PetType petType) {
         var pets = petRepository.findByType(petType);
