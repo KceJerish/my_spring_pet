@@ -1,4 +1,7 @@
-.PHONY: install maven-install build run test clean mongo-install mongo-uninstall mongo-start mongo-stop mongo-status mongo-restart mongo-shell mongo-logs redis-start redis-stop redis-restart redis-status redis-shell redis-keys redis-type redis-get redis-ttl postgres-start postgres-stop postgres-restart postgres-status postgres-shell postgres-quartz-reset docker-build docker-run docker-stop docker-logs docker-shell docker-clean docker-compose-up docker-compose-down docker-compose-logs docker-compose-restart k8s-build-image k8s-deploy k8s-delete k8s-status k8s-logs k8s-restart k8s-shell k8s-port-forward k8s-describe k8s-update-ip help
+.PHONY: install maven-install build run test clean mongo-install mongo-uninstall mongo-start mongo-stop mongo-status mongo-restart mongo-shell mongo-logs redis-start redis-stop redis-restart redis-status redis-shell redis-keys redis-type redis-get redis-ttl postgres-start postgres-stop postgres-restart postgres-status postgres-shell postgres-quartz-reset docker-build docker-run docker-stop docker-logs docker-shell docker-clean docker-compose-up docker-compose-down docker-compose-logs docker-compose-restart k8s-build-image k8s-deploy k8s-delete k8s-status k8s-logs k8s-restart k8s-shell k8s-port-forward k8s-describe k8s-update-ip release-prepare release-perform release-rollback release-clean release-dry-run release help
+
+# Optional: releaseVersion=x.y.z developmentVersion=x.y.z-SNAPSHOT
+RELEASE_ARGS = $(if $(releaseVersion),-DreleaseVersion=$(releaseVersion)) $(if $(developmentVersion),-DdevelopmentVersion=$(developmentVersion)) -B
 
 ## Show available commands
 help:
@@ -62,6 +65,15 @@ help:
 	@echo "  make k8s-port-forward  - Port forward to access app locally"
 	@echo "  make k8s-describe      - Describe pod details"
 	@echo "  make k8s-update-ip     - Update host IP in K8s external services"
+	@echo ""
+	@echo "=== Release Commands ==="
+	@echo "  make release-dry-run  - Simulate release:prepare (no commits/tags)"
+	@echo "  make release-prepare  - mvn release:prepare (bumps pom + kube/deployment/deployment.yml, tags)"
+	@echo "  make release-perform  - mvn release:perform (builds the tagged release)"
+	@echo "  make release-rollback - Roll back a failed release:prepare"
+	@echo "  make release-clean    - Remove release backup/properties files"
+	@echo "  make release          - release-prepare + release-perform"
+	@echo "  Optional: make release-prepare releaseVersion=1.0.0 developmentVersion=1.0.1-SNAPSHOT"
 	@echo ""
 	@echo "=== Full Setup ==="
 	@echo "  make setup         - Install everything and start services"
@@ -329,6 +341,29 @@ k8s-describe:
 ## Update host IP in Kubernetes external service files
 k8s-update-ip:
 	@./kube/update-host-ip.sh
+
+## Simulate release:prepare without committing or tagging
+release-dry-run:
+	mvn release:prepare -DdryRun=true $(RELEASE_ARGS)
+
+## Prepare release (updates pom.xml and kube/deployment/deployment.yml, commits, tags)
+release-prepare:
+	mvn release:prepare $(RELEASE_ARGS)
+
+## Perform release from the tag created by release-prepare
+release-perform:
+	mvn release:perform
+
+## Roll back a failed release:prepare
+release-rollback:
+	mvn release:rollback
+
+## Remove release.properties and pom.xml.releaseBackup
+release-clean:
+	mvn release:clean
+
+## Full release: prepare + perform
+release: release-prepare release-perform
 
 ## spotless apply
 spotless-apply:
