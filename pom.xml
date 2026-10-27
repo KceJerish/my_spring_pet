@@ -156,7 +156,43 @@
                     <autoVersionSubmodules>true</autoVersionSubmodules>
                     <releaseProfiles>docker-build</releaseProfiles>
                     <goals>spring-boot:build-image</goals>
+                    <!-- Rewrite deployment.yml with the release version and commit it before the tag is created -->
+                    <preparationGoals>clean verify antrun:run@update-k8s-version scm:checkin@commit-k8s-version</preparationGoals>
+                    <!-- Same for the next development version, before the release plugin's own dev commit -->
+                    <completionGoals>antrun:run@update-k8s-version scm:checkin@commit-k8s-version</completionGoals>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>3.1.0</version>
+                <executions>
+                    <execution>
+                        <id>update-k8s-version</id>
+                        <configuration>
+                            <target>
+                                <replaceregexp file="${project.basedir}/kube/deployment/deployment.yml"
+                                               match="image: pets:\S+"
+                                               replace="image: pets:${project.version}"/>
+                            </target>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-scm-plugin</artifactId>
+                <version>2.1.0</version>
+                <executions>
+                    <execution>
+                        <id>commit-k8s-version</id>
+                        <configuration>
+                            <includes>kube/deployment/deployment.yml</includes>
+                            <message>[maven-release-plugin] update deployment.yml to ${project.version}</message>
+                            <pushChanges>false</pushChanges>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
