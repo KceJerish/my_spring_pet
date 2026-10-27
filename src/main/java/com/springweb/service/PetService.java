@@ -40,7 +40,7 @@ public class PetService {
     }
 
     public void deleteById(String petId) {
-        petRepository.deleteByPetId(petId);
+        petRepository.deleteById(petId);
     }
 
     @Cacheable(value = "get.pet.types", key = "#petType")

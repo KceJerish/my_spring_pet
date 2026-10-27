@@ -1,6 +1,7 @@
 package com.springweb.repository.mongo;
 
 import com.springweb.model.PetType;
+import org.jspecify.annotations.NonNull;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
@@ -13,5 +14,5 @@ public interface PetRepository extends MongoRepository<PetDocument, String> {
 
     List<PetDocument> findByType(PetType petType);
 
-    void deleteByPetId(String petId);
+    void deleteById(@NonNull String id);
 }
