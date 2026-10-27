@@ -1,14 +1,14 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: spring-web
+  name: pets-web
   labels:
-    app: spring-web
+    app: pets-web
     type: backend
 spec:
   containers:
-    - name: spring-web-app
-      image: spring-web-app:latest
+    - name: pets-app
+      image: pets:0.1.1-SNAPSHOT
       imagePullPolicy: Never  # Use local image, don't pull from registry
       ports:
         - containerPort: 8080

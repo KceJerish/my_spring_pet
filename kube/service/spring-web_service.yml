@@ -1,15 +1,15 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: spring-web-service
-  namespace: spring-web
+  name: pet-app-service
+  namespace: my-pet-namespace
   labels:
-    app: spring-web
+    app: my-pet
     type: backend
 spec:
   type: NodePort
   selector:
-    app: spring-web
+    app: my-pet
     type: backend
   ports:
     - name: http
