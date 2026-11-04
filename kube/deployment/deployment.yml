@@ -27,3 +27,12 @@ spec:
           env:
             - name: spring.profiles.active
               value: "kubernetes"
+            - name: SPRING_CONFIG_ADDITIONAL_LOCATION
+              value: "file:/etc/config/"
+          volumeMounts:
+            - name: pet-config-voume
+              mountPath: /etc/config # Path inside the container
+      volumes:
+        - name: pet-config-voume
+          configMap:
+            name: pet-config
