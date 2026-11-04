@@ -4,17 +4,21 @@ metadata:
   name: pet-config
   namespace: my-pet-namespace
 data:
-  # PostgreSQL configuration (using external service)
-  spring.database.url: "jdbc:postgresql://external-postgres:5432/springweb"
-  spring.database.username: "springweb"
-  spring.database.password: "springweb123"
+  # Mounted at /etc/config and loaded via SPRING_CONFIG_ADDITIONAL_LOCATION (see deployment.yml).
+  # Each ConfigMap key becomes a file, and Spring Boot only reads application*.properties|yml
+  # from that directory, so all settings must live inside this single key.
+  application.properties: |
+    # PostgreSQL configuration (using external service)
+    spring.datasource.url=jdbc:postgresql://external-postgres:5432/springweb
+    spring.datasource.username=springweb
+    spring.datasource.password=springweb123
 
-  # MongoDB configuration (using external service)
-  spring.mongodb.host: "external-mongodb"
-  spring.mongodb.port: "27017"
-  spring.mongodb.database: "pets"
+    # MongoDB configuration (using external service)
+    spring.mongodb.host=external-mongodb
+    spring.mongodb.port=27017
+    spring.mongodb.database=pets
 
-  # Redis configuration (using external service)
-  spring.data.redis.host: "external-redis"
-  spring.data.redis.port: "6379"
+    # Redis configuration (using external service)
+    spring.data.redis.host=external-redis
+    spring.data.redis.port=6379
 
