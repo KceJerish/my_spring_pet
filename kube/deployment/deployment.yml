@@ -20,7 +20,7 @@ spec:
     spec:
       containers:
         - name: pet-app
-          image: pets:0.1.2-SNAPSHOT
+          image: pets:0.1.2
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8080
