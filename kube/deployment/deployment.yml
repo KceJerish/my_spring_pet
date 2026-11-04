@@ -3,6 +3,9 @@ kind: Deployment
 metadata:
   name: pet-app
   namespace: my-pet-namespace
+  annotations:
+    # Stakater Reloader does a rolling restart when pet-config changes (see kube/README.md)
+    configmap.reloader.stakater.com/reload: "pet-config"
   labels:
     app: my-pet
     type: backend

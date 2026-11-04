@@ -319,7 +319,7 @@ k8s-logs:
 
 ## Restart deployment (rollout restart)
 k8s-restart:
-	kubectl rollout restart deployment/spring-web
+	kubectl rollout restart deployment/pet-app -n my-pet-namespace
 	@echo "==> Deployment restarted!"
 
 ## Open shell in pod

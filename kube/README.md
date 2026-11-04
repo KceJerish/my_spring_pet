@@ -9,6 +9,35 @@ This guide explains how to deploy the Spring Web application to Kubernetes (Ranc
 - kubectl configured to point to your Rancher Desktop cluster
 - Databases running locally (PostgreSQL, MongoDB, Redis)
 
+## Namespace
+
+All resources live in the `my-pet-namespace` namespace (see `kube/namespaces/namespace.yml`). The manifests hard-code it,
+but commands without `-n` (for example `kubectl get pods` or `kubectl logs`) use the namespace of your current kubectl
+context, so set it as the default:
+
+```bash
+# Create the namespace (once, before deploying)
+kubectl apply -f kube/namespaces/namespace.yml
+
+# Make it the default for the current context
+kubectl config set-context --current --namespace=my-pet-namespace
+
+# Verify
+kubectl config view --minify --output 'jsonpath={..namespace}'
+```
+
+To target it for a single command without changing your context, pass `-n`:
+
+```bash
+kubectl get pods -n my-pet-namespace
+```
+
+To switch back to the `default` namespace:
+
+```bash
+kubectl config set-context --current --namespace=default
+```
+
 ## Quick Start
 
 ### 1. Deploy to Kubernetes
@@ -141,12 +170,27 @@ The application configuration is stored in `kube/configmap.yml`. Update this fil
 - MongoDB host/port
 - Redis host/port
 
-After updating, redeploy:
+After updating, apply it:
 
 ```bash
 kubectl apply -f kube/configmap.yml
-make k8s-restart
 ```
+
+Kubernetes does not restart pods when a ConfigMap changes, and Spring Boot only reads
+`/etc/config/application.properties` at startup. `kube/deployment/deployment.yml` is therefore annotated for
+[Stakater Reloader](https://github.com/stakater/Reloader) (`configmap.reloader.stakater.com/reload: "pet-config"`),
+which triggers a rolling restart of `pet-app` whenever `pet-config` changes, including manual edits
+(`kubectl edit`, Rancher Desktop UI).
+
+Install Reloader once per cluster:
+
+```bash
+helm repo add stakater https://stakater.github.io/stakater-charts
+helm repo update
+helm install reloader stakater/reloader -n reloader --create-namespace
+```
+
+Without Reloader, restart manually with `make k8s-restart`.
 
 ### Resource Limits
 
