@@ -1,5 +1,5 @@
 {
-  "servers": {
+  "mcpServers": {
     "postgres": {
       "command": "npx",
       "args": [
@@ -10,12 +10,10 @@
     },
     "mongodb": {
       "command": "npx",
-      "args": [
-        "-y",
-        "@modelcontextprotocol/server-mongodb",
-        "mongodb://localhost:27017/pets"
-      ]
+      "args": ["-y", "mongodb-mcp-server"],
+      "env": {
+        "MDB_MCP_CONNECTION_STRING": "mongodb://localhost:27017/pets"
+      }
     }
   }
 }
-
